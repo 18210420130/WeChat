@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
+        <ImageView
+            android:id="@+id/iv_login_icon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/touxiang"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 账 号 "
+            android:minHeight="15dp"
+            android:layout_margin="20dp"
+            android:minWidth="40dp"
+            android:textSize="20sp"
+            android:layout_gravity="center_vertical"/>
+        <EditText
+            android:id="@+id/et_login_userName"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="请输入账号"
+            android:ems="10"
+            android:singleLine="true"
+            android:imeOptions="actionNext" />
+
+        <ImageView
+            android:id="@+id/iv_delete_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 密 码 "
+            android:minHeight="15dp"
+            android:layout_margin="20dp"
+            android:minWidth="40dp"
+            android:textSize="20sp"
+            android:layout_gravity="center_vertical"/>
+
+        <EditText
+            android:id="@+id/et_login_password"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="请输入密码"
+            android:imeOptions="actionGo"
+            android:ems="10"/>
+        <ImageView
+            android:id="@+id/iv_delete_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"/>
+
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/lyYanzhengma"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/lyVerify"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvHideA"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="30dp"
+                />
+            <TextView
+                android:id="@+id/tvHideB"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="30dp"
+                />
+            <TextView
+                android:id="@+id/tvHideC"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="30dp"
+                />
+            <TextView
+                android:id="@+id/tvHideD"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textSize="30dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/IV_num"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:id="@+id/ivNumA"/>
+            <ImageView
+                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:id="@+id/ivNumB"/>
+            <ImageView
+                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:id="@+id/ivNumC"/>
+            <ImageView
+                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:id="@+id/ivNumD"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:textSize="30dp"
+                android:id="@+id/etCheck"
+                android:maxLength="4"
+                android:singleLine="true"
+                android:hint="验证码"/>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="结果"
+                android:id="@+id/tvCheck"
+                android:textSize="30dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/bt_login"
+        android:text="登 录"
+        android:textSize="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    </LinearLayout>

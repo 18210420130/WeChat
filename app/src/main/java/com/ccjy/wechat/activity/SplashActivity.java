@@ -1,19 +1,25 @@
 package com.ccjy.wechat.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
+import com.ccjy.wechat.R;
 import com.hyphenate.chat.EMClient;
 
 /**
  * Created by dell on 2017/3/23.
+ * 开屏页面
  */
 
 public class SplashActivity extends BaseActivity {
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+        intentDecide();
+    }
 
+    //跳转判断方法
+    private void intentDecide() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -33,6 +39,19 @@ public class SplashActivity extends BaseActivity {
                     long time = System.currentTimeMillis() - startTime;
                     try {
                         Thread.sleep(3000-time);
+                        intent2Main();
+                        finish();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }else{
+                    try {
+                        Thread.sleep(3000);
+                        //跳转到登陆页面
+                        intent2Login();
+                        finish();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
