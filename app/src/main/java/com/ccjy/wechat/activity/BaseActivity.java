@@ -34,6 +34,7 @@ public class BaseActivity extends AppCompatActivity {
      startActivity(intent);
     }
 
+
     public static void toastShow(final Activity activity,final String message){
      activity.runOnUiThread(new Runnable() {
          @Override
@@ -43,5 +44,31 @@ public class BaseActivity extends AppCompatActivity {
      });
     }
 
+    public void errorToast(int errCode){
+        String str ="";
+        switch (errCode){
+            case 1:
+                str="账号不能为空";
+                break;
+            case 2:
+                str="密码不能为空";
+                break;
+            case 3:
+                str="验证码不能为空";
+                break;
+            case 4:
+                str="账号或者密码输入有误";
+                break;
+            case 5:
+                str="两次输入的密码不一致";
+                break;
+            case 6:
+                str="请入的内容不合法";
+                break;
+        }
+        toastShow(this,str);
+    }
 
-}
+
+
+        }
