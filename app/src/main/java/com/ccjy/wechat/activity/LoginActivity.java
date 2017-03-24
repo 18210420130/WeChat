@@ -95,7 +95,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (reCode) {
             case 0:
                 login(user, pass);
-                Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
                 break;
            default:
                errorToast(reCode);

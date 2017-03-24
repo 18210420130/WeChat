@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+
+    <ImageView
+        android:id="@+id/item_message_list_icon"
+        android:layout_width="@dimen/item_icon"
+        android:layout_height="@dimen/item_icon"
+        android:src="@drawable/touxiang"/>
+        <RelativeLayout
+            android:id="@+id/item_message_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/icon_layout_margin_left">
+            <TextView
+                android:id="@+id/item_message_list_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/item_content_height"
+                android:text="好友昵称"
+                android:textSize="@dimen/item_username_size"
+                android:gravity="center"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:layout_below="@+id/item_message_list_userName"
+                android:id="@+id/item_message_list_content"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/item_content_height"
+                android:text="消息内容"
+                android:textSize="@dimen/item_content_size"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/item_message_list_sendTime"
+               android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间"/>
+            <TextView
+                android:id="@+id/item_message_list_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未读消息数"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/item_message_list_sendTime"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
