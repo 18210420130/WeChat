@@ -1,5 +1,7 @@
 package com.ccjy.wechat.activity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,7 +37,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private ImageView iv_delete_username, iv_delete_password;
     private EditText etCheck; //验证码按钮
     private TextView tvCheck; //显示随机抽取出的验证码
-    private Button bt_login;  //登录按钮
+    private Button bt_login,bt_register;  //登录按钮 注册按钮
 
 
 
@@ -49,6 +51,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        ProgressDialog progressDialog =new ProgressDialog(this);
+        progressDialog.setIndeterminate(false); //进度条有没有准确的数值
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("正在登录，请稍后");
+        progressDialog.show();
+        progressDialog.cancel(); //关闭dialog
     }
 
      //初始化控件
@@ -75,6 +83,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         etCheck = (EditText) findViewById(R.id.etCheck);
 
         bt_login = (Button) findViewById(R.id.bt_login);
+        bt_register = (Button) findViewById(R.id.bt_register);
 
         ivNumA.setOnClickListener(this);
         ivNumB.setOnClickListener(this);
@@ -82,6 +91,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         ivNumD.setOnClickListener(this);
 
         bt_login.setOnClickListener(this);
+        bt_register.setOnClickListener(this);
 
         setNum();
     }
@@ -159,6 +169,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.bt_login:
                 getLogin();
                 break;
+            case R.id.bt_register:
+                int requestCode =1;
+               Intent intent =new Intent(this,RegisterActivity.class);
+                startActivityForResult(intent,requestCode);
+                break;
         }
     }
 
@@ -231,7 +246,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         int heiSpec = View.MeasureSpec.makeMeasureSpec(height,View.MeasureSpec.EXACTLY);
         //重新绘制图片大小
         v.measure(widSpec, heiSpec);
-        //
         v.layout(0, 0, width, height);
         Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
 

@@ -53,6 +53,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.RegisterActivity"
+            android:launchMode="singleTask"/>
+
 
 
         <!-- 设置环信应用的AppKey -->

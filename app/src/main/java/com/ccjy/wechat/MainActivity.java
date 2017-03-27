@@ -56,17 +56,15 @@ public class MainActivity extends BaseActivity {
 
    }
     private void initFragment(){
-      replace(0);
-
-
-    }
-    public void replace(int i){
-        fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
         mainButtonFragment =new MainButtonFragment();
         messageListFragment=new MessageListFragment();
         contactsListFragment =new ContactsListFragment();
         mySelfListFragment =new MySelfListFragment();
+        replace(0);
+    }
+    public void replace(int i){
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
         switch (i){
             case 0:
                 ft.replace(R.id.message_list_fragment,messageListFragment);
@@ -79,8 +77,8 @@ public class MainActivity extends BaseActivity {
                 ft.replace(R.id.message_list_fragment,mySelfListFragment);
                 break;
         }
-        ft.addToBackStack(null);
         ft.commit();
+
 
     }
 }
