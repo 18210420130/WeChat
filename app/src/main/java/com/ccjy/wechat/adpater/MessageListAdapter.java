@@ -5,13 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ccjy.wechat.R;
-import com.hyphenate.chat.EMClient;
+import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
 import com.hyphenate.chat.EMConversation;
-import com.hyphenate.chat.EMMessageBody;
 import com.hyphenate.chat.EMTextMessageBody;
 
 import java.util.ArrayList;
@@ -22,31 +23,18 @@ import java.util.List;
  * 消息列表页 适配器
  */
 
-public class MessageListAdpater extends RecyclerView.Adapter<MessageListAdpater.MyViewHolder> {
+public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MyViewHolder> {
     private Context context;
     private List<EMConversation> list = new ArrayList();
+    private MessageListOnItemClickListener message;
 
-    public MessageListAdpater(Context context, List<EMConversation> list) {
+    public MessageListAdapter(Context context, List<EMConversation> list) {
         this.context = context;
         this.list = list;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView icon;
-        private TextView userName, content, sendTime, unread; //好友昵称，文本，发送时间，未读数
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            icon = (ImageView) itemView.findViewById(R.id.item_message_list_icon);
-            userName = (TextView) itemView.findViewById(R.id.item_message_list_userName);
-            content = (TextView) itemView.findViewById(R.id.item_message_list_content);
-            sendTime = (TextView) itemView.findViewById(R.id.item_message_list_sendTime);
-            unread = (TextView) itemView.findViewById(R.id.item_message_list_unread);
-        }
-    }
-
     @Override
-    public MessageListAdpater.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MessageListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_message_list, parent, false);
         MyViewHolder myViewHolder = new MyViewHolder(view);
         return myViewHolder;
@@ -54,9 +42,9 @@ public class MessageListAdpater extends RecyclerView.Adapter<MessageListAdpater.
     }
 
     @Override
-    public void onBindViewHolder(MessageListAdpater.MyViewHolder holder, int position) {
+    public void onBindViewHolder(MessageListAdapter.MyViewHolder holder, final int position) {
        //获取当前item的下标数据
-        EMConversation msg =  list.get(position);
+        final EMConversation msg =  list.get(position);
         //设置用户名
         holder.userName.setText(msg.getUserName());
         //设置文本消息
@@ -65,11 +53,44 @@ public class MessageListAdpater extends RecyclerView.Adapter<MessageListAdpater.
         holder.sendTime.setText(getLastMsgTime(msg));
         //设置消息未读数
         setMessageUnread(holder, msg);
+        //给item设置点击事件
+        holder.message_list_lay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                message.onItemClick(v,list.get(position).getAllMsgCount());
+            }
+        });
+        //给item的侧滑菜单 menu键 设置点击事件
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.remove(position);
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        private LinearLayout message_list_lay;
+        private ImageView icon;
+        private TextView userName, content, sendTime, unread; //好友昵称，文本，发送时间，未读数
+        private Button delete;
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            message_list_lay= (LinearLayout) itemView.findViewById(R.id.message_list_lay);
+            icon = (ImageView) itemView.findViewById(R.id.item_message_list_icon);
+            userName = (TextView) itemView.findViewById(R.id.item_message_list_userName);
+            content = (TextView) itemView.findViewById(R.id.item_message_list_content);
+            sendTime = (TextView) itemView.findViewById(R.id.item_message_list_sendTime);
+            unread = (TextView) itemView.findViewById(R.id.item_message_list_unread);
+            delete= (Button) itemView.findViewById(R.id.message_list_item_delete_menu);
+        }
     }
 
     //毫秒转分钟
@@ -132,5 +153,12 @@ public class MessageListAdpater extends RecyclerView.Adapter<MessageListAdpater.
             } else
                 return "刚刚";
         }
+    }
+
+
+
+
+    public void setOnItemClickListener(MessageListOnItemClickListener message){
+        this.message=message;
     }
 }

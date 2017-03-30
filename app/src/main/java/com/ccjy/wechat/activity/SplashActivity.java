@@ -1,6 +1,8 @@
 package com.ccjy.wechat.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 
 import com.ccjy.wechat.R;
 import com.hyphenate.chat.EMClient;
@@ -11,11 +13,28 @@ import com.hyphenate.chat.EMClient;
  */
 
 public class SplashActivity extends BaseActivity {
+
+//    //接收方
+//    Handler handler=new Handler(){
+//        public void handleMessage(Message msg){
+//            if (EMClient.getInstance().isLoggedInBefore()){
+//                intent2Main();
+//            }else {
+//                intent2Login();
+//            }
+//            SplashActivity.this.finish();
+//        }
+//    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         intentDecide();
+
+//        //发送方
+//        Message msg =new Message();
+//        msg.what=1;//区分是哪个message发送的
+//        handler.sendMessageDelayed(msg,2000);
     }
 
     //跳转判断方法
@@ -60,4 +79,10 @@ public class SplashActivity extends BaseActivity {
         }).start();
     }
 
+    //屏蔽返回间
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        handler.removeMessages(1);
+    }
 }

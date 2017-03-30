@@ -3,14 +3,18 @@ package com.ccjy.wechat.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ccjy.wechat.MainActivity;
 import com.ccjy.wechat.R;
-import com.ccjy.wechat.adpater.MessageListAdpater;
+import com.ccjy.wechat.adpater.MessageListAdapter;
+import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 
@@ -27,6 +31,7 @@ import java.util.Map;
 
 public class MessageListFragment extends Fragment{
     private List<EMConversation> list =new ArrayList<>();
+    private MessageListAdapter messageListAdpater;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -74,11 +79,40 @@ public class MessageListFragment extends Fragment{
 
     private void initRecyclerView(View view){
      RecyclerView recyclerView= (RecyclerView) view.findViewById(R.id.message_list_recyclerView);
+      final SwipeRefreshLayout message_swipe= (SwipeRefreshLayout) view.findViewById(R.id.message_swipe);
+        //设置刷新时动画的颜色，可以设置4个
+        message_swipe.setProgressBackgroundColorSchemeResource(android.R.color.white);
+        message_swipe.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light,android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
+        message_swipe.setProgressViewOffset(false, 0, (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
+                        .getDisplayMetrics()));
+
         initData();
-        MessageListAdpater messageListAdpater =new MessageListAdpater(getActivity(),list);
+        //设置下拉刷新事件
+        message_swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                message_swipe.setRefreshing(false);
+                messageListAdpater.notifyDataSetChanged();
+
+            }
+        });
+         messageListAdpater =new MessageListAdapter(getActivity(),list);
+        messageListAdpater.setOnItemClickListener(new MessageListOnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int postion) {
+                MainActivity activity = (MainActivity) getActivity();
+               activity.intent2ChatDetails();
+
+            }
+        });
+
         LinearLayoutManager llm =new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(messageListAdpater);
+
     }
 }

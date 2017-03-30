@@ -1,24 +1,20 @@
 package com.ccjy.wechat;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ccjy.wechat.activity.BaseActivity;
-import com.ccjy.wechat.activity.LoginActivity;
+import com.ccjy.wechat.activity.ChatDetailsActivity;
 import com.ccjy.wechat.fragment.ContactsListFragment;
 import com.ccjy.wechat.fragment.MainButtonFragment;
 import com.ccjy.wechat.fragment.MessageListFragment;
 import com.ccjy.wechat.fragment.MySelfListFragment;
-import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
 /**
@@ -32,8 +28,12 @@ public class MainActivity extends BaseActivity {
     private  FragmentTransaction ft;
     private MainButtonFragment mainButtonFragment; //主页面 导航按钮
     private  MessageListFragment messageListFragment; //消息列表页面
-    private  ContactsListFragment contactsListFragment;
-   private MySelfListFragment mySelfListFragment;
+    private  ContactsListFragment contactsListFragment;//联系人页面
+   private MySelfListFragment mySelfListFragment; //设置页面
+
+    public static final String MESSAGE_FRAGMENT="MESSAGE_FRAGMENT";
+    public static final String CONTACTS_FRAGMENT="CONTACTS_FRAGMENT";
+    public static final String MYSELF_FRAGMENT="MYSELF_FRAGMENT";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 EMClient.getInstance().logout(true);
-                intentTo(MainActivity.this,new Intent(MainActivity.this, LoginActivity.class));
+                intent2Login();
+                finish();
                 Toast.makeText(MainActivity.this,"已成功退出账号",Toast.LENGTH_SHORT).show();
             }
         });
@@ -60,20 +61,20 @@ public class MainActivity extends BaseActivity {
         messageListFragment=new MessageListFragment();
         contactsListFragment =new ContactsListFragment();
         mySelfListFragment =new MySelfListFragment();
-        replace(0);
+        replace(MESSAGE_FRAGMENT);
     }
-    public void replace(int i){
+    public void replace(String str){
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
-        switch (i){
-            case 0:
+        switch (str){
+            case MESSAGE_FRAGMENT:
                 ft.replace(R.id.message_list_fragment,messageListFragment);
                 ft.replace(R.id.main_button_fragment,mainButtonFragment);
                 break;
-            case 1:
+            case CONTACTS_FRAGMENT:
                 ft.replace(R.id.message_list_fragment,contactsListFragment);
                 break;
-            case 2:
+            case MYSELF_FRAGMENT:
                 ft.replace(R.id.message_list_fragment,mySelfListFragment);
                 break;
         }
@@ -81,4 +82,12 @@ public class MainActivity extends BaseActivity {
 
 
     }
+
+    //跳转到聊天详情页面
+    public void intent2ChatDetails(){
+        Intent intent=new Intent(this, ChatDetailsActivity.class);
+        startActivity(intent);
+    }
+
+
 }

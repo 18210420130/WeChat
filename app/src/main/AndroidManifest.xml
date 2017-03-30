@@ -49,11 +49,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.CHAT"/>
               <category android:name="android.intent.category.DEFAULT"/>
-
             </intent-filter>
         </activity>
 
         <activity android:name=".activity.RegisterActivity"
+            android:launchMode="singleTask"/>
+
+        <activity android:name=".activity.ChatDetailsActivity"
             android:launchMode="singleTask"/>
 
 

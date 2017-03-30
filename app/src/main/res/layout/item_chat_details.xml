@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/item_chat_details_layout_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+        <ImageView
+            android:id="@+id/item_chat_details_icon_left"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/touxiang"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/item_chat_details_name_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用户名"
+                android:textSize="16sp"
+                android:textColor="#000000"/>
+            <TextView
+                android:id="@+id/item_chat_details_content_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="消息"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/item_chat_details_layout_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="260dp">
+        <TextView
+            android:id="@+id/item_chat_details_name_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/item_chat_details_content_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="消息"/>
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/item_chat_details_icon_right"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/touxiang" />
+    </LinearLayout>
+
+</LinearLayout>

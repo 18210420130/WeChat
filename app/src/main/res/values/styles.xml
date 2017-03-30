@@ -9,4 +9,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="aaa" parent="Theme.AppCompat.Dialog">
+        <item name="android:backgroundDimEnabled">true</item>  //是否显示dialog阴影
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+    
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

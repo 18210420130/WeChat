@@ -77,105 +77,22 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/lyYanzhengma"
-        android:orientation="horizontal"
+    <CheckBox
+        android:text="记住密码"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <LinearLayout
-            android:id="@+id/lyVerify"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/tvHideA"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:gravity="center"
-                android:textSize="20dp"
-                />
-            <TextView
-                android:id="@+id/tvHideB"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:gravity="center"
-                android:textSize="20dp"
-                />
-            <TextView
-                android:id="@+id/tvHideC"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:gravity="center"
-                android:textSize="20dp"
-                />
-            <TextView
-                android:id="@+id/tvHideD"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:gravity="center"
-                android:textSize="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/IV_num"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_height="80dp"
-                android:layout_width="60dp"
-                android:id="@+id/ivNumA"/>
-            <ImageView
-                android:layout_height="80dp"
-                android:layout_width="60dp"
-                android:id="@+id/ivNumB"/>
-            <ImageView
-                android:layout_height="80dp"
-                android:layout_width="60dp"
-                android:id="@+id/ivNumC"/>
-
-            <ImageView
-                android:layout_height="80dp"
-                android:layout_width="60dp"
-                android:id="@+id/ivNumD"/>
-        </LinearLayout>
-
-
-
-
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_height="wrap_content"
+        android:id="@+id/rem_pw"
+        android:layout_margin="10dp"/>
+
+    <CheckBox
+        android:text="自动登录"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:orientation="horizontal">
-
-        <EditText
-            android:layout_height="wrap_content"
-            android:layout_width="120dp"
-            android:textSize="30dp"
-            android:id="@+id/etCheck"
-            android:maxLength="4"
-            android:singleLine="true"
-            android:hint="验证码"/>
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="结果"
-            android:id="@+id/tvCheck"
-            android:textSize="16dp"
-            android:visibility="gone"/>
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/auto_login" />
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -198,6 +115,8 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+
 
 
 </LinearLayout>

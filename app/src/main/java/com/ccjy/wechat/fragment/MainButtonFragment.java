@@ -3,7 +3,6 @@ package com.ccjy.wechat.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,13 +49,13 @@ public class MainButtonFragment extends Fragment implements View.OnClickListener
      MainActivity activity= (MainActivity) getActivity();
         switch (v.getId()){
             case R.id.main_button_message:
-                activity.replace(0);
+                activity.replace(MainActivity.MESSAGE_FRAGMENT);
                 break;
             case R.id.main_button_contacts:
-                activity.replace(1);
+                activity.replace(MainActivity.CONTACTS_FRAGMENT);
                 break;
             case R.id.main_button_myself:
-                activity.replace(2);
+                activity.replace(MainActivity.MYSELF_FRAGMENT);
                 break;
 
         }
