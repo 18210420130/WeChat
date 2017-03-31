@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.ccjy.wechat.R;
 import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMTextMessageBody;
 
@@ -161,4 +162,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void setOnItemClickListener(MessageListOnItemClickListener message){
         this.message=message;
     }
+
+
+
 }
