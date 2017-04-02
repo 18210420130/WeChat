@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -14,7 +15,7 @@ import com.ccjy.wechat.callbreak.LoadListener;
  * Created by dell on 2017/3/31.
  */
 
-public class MyRefreshLayout extends SwipeRefreshLayout implements AbsListView.OnScrollListener {
+public class MyRefreshLayout extends SwipeRefreshLayout {
     private RecyclerView recyclerView;
     private boolean loading = false;
 
@@ -34,15 +35,20 @@ public class MyRefreshLayout extends SwipeRefreshLayout implements AbsListView.O
             View childAt = getChildAt(0);
             if (childAt instanceof RecyclerView) {
                 recyclerView = (RecyclerView) childAt;
-                //给listView设置滑动监听
-                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-
+                //设置滑动监听
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                         super.onScrollStateChanged(recyclerView, newState);
-                        if (newState==0){
+                        Log.e("OnScrollListener", "newState = " + newState);
+                        if (newState == 0) {
                             canLoad();
                         }
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
                     }
                 });
             }
@@ -51,7 +57,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout implements AbsListView.O
 
     //加载数据
     private void load() {
-        if (loadListener!=null){
+        if (loadListener != null) {
             setLoadingView(true);
             loadListener.load();
         }
@@ -71,8 +77,8 @@ public class MyRefreshLayout extends SwipeRefreshLayout implements AbsListView.O
     }
 
     //加载更多时 view是否可见
-    public void setLoadingView(boolean isLoading){
-        loading=isLoading;
+    public void setLoadingView(boolean isLoading) {
+        loading = isLoading;
         loadListener.setFootView(isLoading);
 
     }
@@ -95,18 +101,10 @@ public class MyRefreshLayout extends SwipeRefreshLayout implements AbsListView.O
         return false;
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-    }
 
     private LoadListener loadListener;
-    public void setLoadListener(LoadListener loadListener){
-        this.loadListener =loadListener;
+
+    public void setLoadListener(LoadListener loadListener) {
+        this.loadListener = loadListener;
     }
 }

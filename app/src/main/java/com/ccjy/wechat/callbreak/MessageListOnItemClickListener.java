@@ -8,5 +8,7 @@ import android.view.View;
  */
 
 public interface MessageListOnItemClickListener {
-    void onItemClick(View view, int postion);
+    void onItemClick(int postion);
+    void onLongClick();
+    void deleteItem(int postion);
 }

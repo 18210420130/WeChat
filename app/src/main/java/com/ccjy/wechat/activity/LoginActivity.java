@@ -34,14 +34,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private Button bt_login, bt_register;  //登录按钮 注册按钮
     private CheckBox rem_pw, auto_login;  //记住密码  自动登录
     private CustomDialog customDialog;
-    private String user,pass;
+    private String user, pass;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
     }
-
 
 
     //初始化控件
@@ -92,8 +92,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 intent2Main();
                 finish();
                 customDialog.cancel();
-                SPUtils.setLastLoginUserName(LoginActivity.this,userName);
-                SPUtils.setLastLoginPassword(LoginActivity.this,password);
+                SPUtils.setLastLoginUserName(LoginActivity.this, userName);
+                SPUtils.setLastLoginPassword(LoginActivity.this, password);
                 Log.e("main", "登录聊天服务器成功！");
             }
 

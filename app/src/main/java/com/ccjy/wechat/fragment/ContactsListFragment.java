@@ -20,7 +20,7 @@ public class ContactsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_contacts_list,container,false);
+        return inflater.inflate(R.layout.fragment_contacts_list, container, false);
     }
 
     @Override

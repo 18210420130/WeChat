@@ -29,6 +29,14 @@ public class BaseActivity extends AppCompatActivity {
         intent.addCategory("android.intent.category.DEFAULT");
         startActivity(intent);
     }
+
+    //跳转到消息详情页面
+    public void intent2ChatDetails(String userName){
+        Intent intent =new Intent("android.intent.action.CHAT_DETAILS");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.putExtra(ChatDetailsActivity.USERNAME,userName);
+        startActivity(intent);
+    }
     //intent显示跳转
     public void intentTo(Activity activity,Intent intent){
      startActivity(intent);

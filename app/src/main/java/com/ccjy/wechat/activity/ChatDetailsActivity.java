@@ -30,7 +30,7 @@ import java.util.List;
  */
 
 public class ChatDetailsActivity extends BaseActivity implements EMMessageListener, View.OnClickListener, EMCallBack {
-    private List<EMMessage> list=new ArrayList<EMMessage>();
+    private List<EMMessage> list = new ArrayList<EMMessage>();
     private RecyclerView recyclerView;
     private ChatDetailsAdapter chatDetailsAdapter;
     private EditText content; //发送消息文本框
@@ -38,7 +38,7 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     private TextView title_name;  //显示昵称
     private String userName, groupId;
     private static final String GROUPID = "groupId";
-    private static final String USERNAME = "userName";
+    public static final String USERNAME = "userName";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,15 +48,10 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
         setContentView(R.layout.activity_chat_details);
         //注册消息监听
         EMClient.getInstance().chatManager().addMessageListener(this);
-        userName = getIntent().getStringExtra(USERNAME);
-        groupId = getIntent().getStringExtra(GROUPID);
         getData();
         initView();
-
         //设置title_name
         setTitleName();
-
-
     }
 
     private void setTitleName() {
@@ -73,7 +68,14 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
         content = (EditText) findViewById(R.id.chat_details_activity_content);
         send = (TextView) findViewById(R.id.chat_details_activity_send);
         send.setOnClickListener(this);
-
+        userName = getIntent().getStringExtra(USERNAME);
+        groupId = getIntent().getStringExtra(GROUPID);
+        list.clear();
+        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(userName);
+        //获取此会话的所有消息
+        if (conversation!=null) {
+            list = conversation.getAllMessages();
+        }
         chatDetailsAdapter = new ChatDetailsAdapter(this, list);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -88,7 +90,9 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
                     .getInstance()
                     .chatManager()
                     .getConversation(userName);
-            list = conversation.getAllMessages();
+            if(conversation !=null) {
+                list = conversation.getAllMessages();
+            }
         } else {
             EMConversation conversation = EMClient
                     .getInstance()
@@ -125,7 +129,6 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
             @Override
             public void run() {
                 for (EMMessage message : list) {
-                    //调用addMsg2List（）方法
                     addMsgToList(message);
                 }
             }

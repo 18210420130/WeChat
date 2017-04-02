@@ -44,8 +44,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public void onBindViewHolder(MessageListAdapter.MyViewHolder holder, final int position) {
-       //获取当前item的下标数据
-        final EMConversation msg =  list.get(position);
+        //获取当前item的下标数据
+        final EMConversation msg = list.get(position);
         //设置用户名
         holder.userName.setText(msg.getUserName());
         //设置文本消息
@@ -58,18 +58,20 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         holder.message_list_lay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                message.onItemClick(v,list.get(position).getAllMsgCount());
+                if (message!=null) {
+                    message.onItemClick(position);
+                }
             }
         });
         //给item的侧滑菜单 menu键 设置点击事件
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.remove(position);
-                notifyDataSetChanged();
+                if (message!=null) {
+                    message.deleteItem(position);
+                }
             }
         });
-
     }
 
     @Override
@@ -84,55 +86,59 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         private Button delete;
         public MyViewHolder(View itemView) {
             super(itemView);
-            message_list_lay= (LinearLayout) itemView.findViewById(R.id.message_list_lay);
+            message_list_lay = (LinearLayout) itemView.findViewById(R.id.message_list_lay);
             icon = (ImageView) itemView.findViewById(R.id.item_message_list_icon);
             userName = (TextView) itemView.findViewById(R.id.item_message_list_userName);
             content = (TextView) itemView.findViewById(R.id.item_message_list_content);
             sendTime = (TextView) itemView.findViewById(R.id.item_message_list_sendTime);
             unread = (TextView) itemView.findViewById(R.id.item_message_list_unread);
-            delete= (Button) itemView.findViewById(R.id.message_list_item_delete_menu);
+            delete = (Button) itemView.findViewById(R.id.message_list_item_delete_menu);
         }
     }
 
     //毫秒转分钟
-    private int hao2fen(long time){
-     return (int) (time/1000/60);
+    private int hao2fen(long time) {
+        return (int) (time / 1000 / 60);
     }
+
     //分钟转小时
-    private int fen2xiaoshi(long time){
-        return (int) (time/60);
+    private int fen2xiaoshi(long time) {
+        return (int) (time / 60);
     }
+
     //小时转天
-    private int xiaoshi2tian(long time){
-        return (int) (time/24);
+    private int xiaoshi2tian(long time) {
+        return (int) (time / 24);
     }
 
     //设置文本消息方法 获取到最后一条发送的文本消息 如果有内容  就设置 ，如果没有 就显示 空
     private void setMessageContent(MyViewHolder holder, EMConversation msg) {
-        String message ;
+        String message;
         try {
             EMTextMessageBody txtBody = (EMTextMessageBody) msg.getLastMessage().getBody();
             message = txtBody.getMessage();
-        }catch (Exception e){
-            message="";
+        } catch (Exception e) {
+            message = "";
             e.printStackTrace();
         }
         holder.content.setText(message);
     }
+
     //设置消息未读数的方法    如果未读数大于0，就设置可见，反之 设置不可见
     private void setMessageUnread(MyViewHolder holder, EMConversation msg) {
         int unreadMsgCount = msg.getUnreadMsgCount();
-        if (unreadMsgCount>0){
+        if (unreadMsgCount > 0) {
             holder.unread.setVisibility(View.VISIBLE);
             try {
-                holder.unread.setText( String.valueOf(unreadMsgCount));
-            }catch (Exception e){
+                holder.unread.setText(String.valueOf(unreadMsgCount));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             holder.unread.setVisibility(View.GONE);
         }
     }
+
     //设置收到最后一条消息的时间
     private String getLastMsgTime(EMConversation msg) {
         // 收到最后一条消息的 时间
@@ -143,10 +149,10 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         //如果m 大于60分钟，
         if (m > 60) {
             //把 分钟 转成 小时  如果大于24小时 就把 小时 转成 天，反正 就把分钟转成小时
-           if (fen2xiaoshi(m)>24){
-               return xiaoshi2tian(fen2xiaoshi(m))+"天前";
-           }
-            return fen2xiaoshi(m)+"小时前";
+            if (fen2xiaoshi(m) > 24) {
+                return xiaoshi2tian(fen2xiaoshi(m)) + "天前";
+            }
+            return fen2xiaoshi(m) + "小时前";
         } else {
             //如果m大于1分钟 就返回 分钟前。否则 返回 刚刚
             if (m > 1) {
@@ -157,12 +163,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
 
-
-
-    public void setOnItemClickListener(MessageListOnItemClickListener message){
-        this.message=message;
+    public void setOnItemClickListener(MessageListOnItemClickListener message) {
+        this.message = message;
     }
-
 
 
 }

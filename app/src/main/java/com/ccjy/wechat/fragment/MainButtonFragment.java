@@ -17,14 +17,14 @@ import com.ccjy.wechat.R;
  */
 
 public class MainButtonFragment extends Fragment implements View.OnClickListener {
-    private Button btn_message,btn_contacts,btn_myself;
+    private Button btn_message, btn_contacts, btn_myself;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_main_button,container,false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_main_button, container, false);
     }
 
     @Override
@@ -33,10 +33,10 @@ public class MainButtonFragment extends Fragment implements View.OnClickListener
         initView(view);
     }
 
-    private void initView(View view){
-         btn_message = (Button) view.findViewById(R.id.main_button_message);
-         btn_contacts = (Button) view.findViewById(R.id.main_button_contacts);
-         btn_myself = (Button) view.findViewById(R.id.main_button_myself);
+    private void initView(View view) {
+        btn_message = (Button) view.findViewById(R.id.main_button_message);
+        btn_contacts = (Button) view.findViewById(R.id.main_button_contacts);
+        btn_myself = (Button) view.findViewById(R.id.main_button_myself);
 
         btn_message.setOnClickListener(this);
         btn_contacts.setOnClickListener(this);
@@ -46,8 +46,8 @@ public class MainButtonFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-     MainActivity activity= (MainActivity) getActivity();
-        switch (v.getId()){
+        MainActivity activity = (MainActivity) getActivity();
+        switch (v.getId()) {
             case R.id.main_button_message:
                 activity.replace(MainActivity.MESSAGE_FRAGMENT);
                 break;

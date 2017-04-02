@@ -9,4 +9,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button2" />
+
+    <EditText
+        android:hint="请输入对方账号"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_userName" />
+    <EditText
+        android:hint="请输入要发送的内容"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_content" />
+
+    <Button
+        android:text="发送"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/send" />
 </LinearLayout>

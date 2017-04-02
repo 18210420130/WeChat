@@ -57,7 +57,12 @@
             android:launchMode="singleTask"/>
 
         <activity android:name=".activity.ChatDetailsActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask">
+            <intent-filter >
+                <action android:name="android.intent.action.CHAT_DETAILS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
 
 

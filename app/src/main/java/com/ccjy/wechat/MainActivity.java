@@ -58,7 +58,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     private void initView() {
         main_searchView = (SearchView) findViewById(R.id.main_searchView);
 
@@ -92,11 +91,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    //跳转到聊天详情页面
-    public void intent2ChatDetails() {
-        Intent intent = new Intent(this, ChatDetailsActivity.class);
-        startActivity(intent);
-    }
+
 
 
 }

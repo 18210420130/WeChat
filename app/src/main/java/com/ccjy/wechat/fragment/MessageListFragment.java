@@ -1,5 +1,6 @@
 package com.ccjy.wechat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.ccjy.wechat.MainActivity;
 import com.ccjy.wechat.R;
+import com.ccjy.wechat.activity.BaseActivity;
 import com.ccjy.wechat.adpater.MessageListAdapter;
 import com.ccjy.wechat.callbreak.LoadListener;
 import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
@@ -36,7 +39,9 @@ import java.util.Map;
 public class MessageListFragment extends Fragment implements EMMessageListener {
     private List<EMConversation> list = new ArrayList<>();
     private MessageListAdapter messageListAdapter;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager llm;
+    private RecyclerViewHeader header;
 
     @Nullable
     @Override
@@ -48,34 +53,30 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initData();
         //注册消息监听
-
         initRecyclerView(view);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //移除消息监听
-
-
     }
 
     //给列表加载 会话 数据
     private void initData() {
-        //清空list集合
-        list.clear();
         //获取所有会话
         Map<String, EMConversation> conversations = EMClient
                 .getInstance()
                 .chatManager()
                 .getAllConversations();
+        //清空list集合
+        list.clear();
         //把map集合转成list集合
         for (EMConversation msg : conversations.values()) {
             list.add(msg);
         }
-
         //给list集合排序
+        setList();
+    }
+
+    //给list集合排序
+    private void setList() {
         Comparator comp = new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
@@ -95,7 +96,6 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
 
     private void initRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.message_list_recyclerView);
-        initData();
         //设置上拉刷新和下拉加载
         setRefreshLayout(view);
         //实例化适配器
@@ -103,25 +103,41 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
         //给recyclerView的每个item设置点击事件
         messageListAdapter.setOnItemClickListener(new MessageListOnItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion) {
-                MainActivity activity = (MainActivity) getActivity();
-                //点击跳到消息详情页面
-                activity.intent2ChatDetails();
+            public void onItemClick(int postion) {
+                BaseActivity activity = (BaseActivity) getActivity();
+                activity.intent2ChatDetails(list.get(postion).getUserName());
+            }
+
+            @Override
+            public void onLongClick() {
+
+            }
+
+            @Override
+            public void deleteItem(int postion) {
+                delItem(postion);
+            }
+
+            private void delItem(int id){
+                EMConversation messages = list.get(id);
+                //删除和某个user会话，如果需要保留聊天记录，传false
+                EMClient.getInstance().chatManager().deleteConversation(messages.getUserName(), false);
+                list.remove(id);
+                messageListAdapter.notifyDataSetChanged();
             }
         });
         //实例化线性管理者
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm = new LinearLayoutManager(getActivity());
         //设置垂直滑动
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         //设置适配器
         recyclerView.setAdapter(messageListAdapter);
-
     }
 
     //设置上拉刷新和下拉加载
-    private void setRefreshLayout(View view) {
-        final SwipeRefreshLayout message_swipe = (SwipeRefreshLayout) view.findViewById(R.id.message_swipe);
+    private void setRefreshLayout(final View view) {
+        final MyRefreshLayout message_swipe = (MyRefreshLayout) view.findViewById(R.id.message_swipe);
         //设置刷新时动画的颜色，可以设置4个
         message_swipe.setProgressBackgroundColorSchemeResource(android.R.color.white);
         message_swipe.setColorSchemeResources(android.R.color.holo_blue_light,
@@ -140,15 +156,34 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
 
             }
         });
+        //设置上拉加载
+        message_swipe.setLoadListener(new LoadListener() {
+            @Override
+            public void load() {
+                message_swipe.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageListAdapter.notifyDataSetChanged();
+                        message_swipe.setLoadingView(false);
+                    }
+                }, 2500);
 
-        View view1 = LayoutInflater.from(getActivity()).inflate(R.layout.load_viiew, null, false);
+            }
 
+            @Override
+            public void setFootView(boolean loading) {
+                if (loading) {
+
+                } else {
+                    recyclerView.removeAllViews();
+                }
+            }
+        });
 
     }
 
     @Override
     public void onMessageReceived(List<EMMessage> list) {
-
         messageListAdapter.notifyDataSetChanged();
     }
 
