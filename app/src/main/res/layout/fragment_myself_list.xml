@@ -26,4 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/send" />
+
+    <Button
+        android:id="@+id/setGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="创建群组"/>
 </LinearLayout>

@@ -1,15 +1,17 @@
 package com.ccjy.wechat.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -34,11 +36,13 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     private RecyclerView recyclerView;
     private ChatDetailsAdapter chatDetailsAdapter;
     private EditText content; //发送消息文本框
-    private TextView send;   //发送按钮
+    private TextView send,picture,video, voice;  //发送按钮
     private TextView title_name;  //显示昵称
     private String userName, groupId;
     private static final String GROUPID = "groupId";
     public static final String USERNAME = "userName";
+    private String text;
+    
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +52,6 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
         setContentView(R.layout.activity_chat_details);
         //注册消息监听
         EMClient.getInstance().chatManager().addMessageListener(this);
-        getData();
         initView();
         //设置title_name
         setTitleName();
@@ -64,24 +67,71 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     }
 
     private void initView() {
+        //获取携带数据
+        getExtra();
+        //给输入框设置文本监听
+        setContentListener();
         recyclerView = (RecyclerView) findViewById(R.id.chat_details_activity_recyclerView);
         content = (EditText) findViewById(R.id.chat_details_activity_content);
         send = (TextView) findViewById(R.id.chat_details_activity_send);
+        picture= (TextView) findViewById(R.id.chat_details_picture);
+        video= (TextView) findViewById(R.id.chat_details_video);
+        voice= (TextView) findViewById(R.id.chat_details_voice);
+
         send.setOnClickListener(this);
-        userName = getIntent().getStringExtra(USERNAME);
-        groupId = getIntent().getStringExtra(GROUPID);
+        picture.setOnClickListener(this);
+        video.setOnClickListener(this);
+        voice.setOnClickListener(this);
+
         list.clear();
-        EMConversation conversation = EMClient.getInstance().chatManager().getConversation(userName);
-        //获取此会话的所有消息
-        if (conversation!=null) {
-            list = conversation.getAllMessages();
-        }
+        getData();
         chatDetailsAdapter = new ChatDetailsAdapter(this, list);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(chatDetailsAdapter);
     }
+
+    private void setContentListener() {
+        if (content!=null) {
+            content.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    text = s.toString();
+                }
+            });
+        }
+    }
+
+    private void getExtra() {
+        Intent intent = getIntent();
+        try {
+            userName = intent.getStringExtra(USERNAME);
+            groupId = intent.getStringExtra(GROUPID);
+            text= intent.getStringExtra("text");
+            List<EMMessage> messages = intent.getParcelableArrayListExtra(AddFriendActivity.ALL_MESSAGE);
+            String username = intent.getStringExtra(AddFriendActivity.FRIEND_USERNAME);
+            list.addAll(messages);
+            this.userName = username;
+        } catch (Exception e) {
+            toastShow(ChatDetailsActivity.this, "暂时没有新的聊天记录");
+        }
+        if (!TextUtils.isEmpty(text)) {
+            content.setText(text);
+            content.setSelection(content.getText().length());
+        }
+    }
+
 
     //获取会话数据
     private void getData() {
@@ -90,7 +140,7 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
                     .getInstance()
                     .chatManager()
                     .getConversation(userName);
-            if(conversation !=null) {
+            if (conversation != null) {
                 list = conversation.getAllMessages();
             }
         } else {
@@ -162,16 +212,33 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     //发送监听
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.send:
+                send();
+                break;
+            case R.id.chat_details_picture:
+                break;
+            case R.id.chat_details_video:
+                break;
+            case R.id.chat_details_voice:
+                break;
+
+        }
+
+
+    }
+   //发送方法
+    private void send() {
         String str = content.getText().toString();
         try {
             sendTxt(str);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         content.setText("");
+        text = "";
+        chatDetailsAdapter.notifyDataSetChanged();
         recyclerView.setBottom(recyclerView.getBottom());
-
     }
 
     //发送文本消息
@@ -213,5 +280,14 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     @Override
     public void onProgress(int i, String s) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("text", text);
+        intent.putExtra(USERNAME, userName);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

@@ -1,6 +1,5 @@
 package com.ccjy.wechat.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.ccjy.wechat.MainActivity;
 import com.ccjy.wechat.R;
-import com.ccjy.wechat.activity.BaseActivity;
 import com.ccjy.wechat.adpater.MessageListAdapter;
 import com.ccjy.wechat.callbreak.LoadListener;
 import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
@@ -28,6 +26,7 @@ import com.hyphenate.chat.EMMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,12 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
     private MessageListAdapter messageListAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager llm;
-    private RecyclerViewHeader header;
+
+
+
+    public void setChatText(HashMap<String, String> textMap) {
+        messageListAdapter.setTextMap(textMap);
+    }
 
     @Nullable
     @Override
@@ -73,6 +77,7 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
         }
         //给list集合排序
         setList();
+
     }
 
     //给list集合排序
@@ -103,9 +108,9 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
         //给recyclerView的每个item设置点击事件
         messageListAdapter.setOnItemClickListener(new MessageListOnItemClickListener() {
             @Override
-            public void onItemClick(int postion) {
-                BaseActivity activity = (BaseActivity) getActivity();
-                activity.intent2ChatDetails(list.get(postion).getUserName());
+            public void onItemClick(int position) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.intent2ChatDetails(list.get(position).getUserName());
             }
 
             @Override
@@ -114,11 +119,11 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
             }
 
             @Override
-            public void deleteItem(int postion) {
-                delItem(postion);
+            public void deleteItem(int position) {
+                delItem(position);
             }
 
-            private void delItem(int id){
+            private void delItem(int id) {
                 EMConversation messages = list.get(id);
                 //删除和某个user会话，如果需要保留聊天记录，传false
                 EMClient.getInstance().chatManager().deleteConversation(messages.getUserName(), false);

@@ -2,6 +2,7 @@ package com.ccjy.wechat.adpater;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.ccjy.wechat.R;
 import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
-import com.hyphenate.chat.EMClient;
+import com.ccjy.wechat.view.GlideCircleTransform;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +33,18 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     private Context context;
     private List<EMConversation> list = new ArrayList();
     private MessageListOnItemClickListener message;
+    private HashMap<String, String> textMap = new HashMap<>();
+    private RequestManager glideRequest;
+    private void setImageView(ImageView imageView){
+        glideRequest = Glide.with(context);
+        glideRequest.load(R.drawable.touxiang)
+                .transform(new GlideCircleTransform(context)).into(imageView);
+    }
+
+    public void setTextMap(HashMap<String, String> textMap) {
+        this.textMap = textMap;
+        notifyDataSetChanged();
+    }
 
     public MessageListAdapter(Context context, List<EMConversation> list) {
         this.context = context;
@@ -44,21 +61,43 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public void onBindViewHolder(MessageListAdapter.MyViewHolder holder, final int position) {
+       setImageView(holder.icon);
         //获取当前item的下标数据
         final EMConversation msg = list.get(position);
+        EMMessage lastMessage = msg.getLastMessage();
+        if (!TextUtils.isEmpty(textMap.get(msg.getUserName()))) {
+            holder.content.setText("[草稿]" + textMap.get(msg.getUserName()));
+        } else {
+            EMMessage.Type type = lastMessage.getType();
+            switch (type) {
+                case TXT:
+                    //设置文本消息
+                    setMessageContent(holder, msg);
+                    break;
+                case IMAGE:
+                    holder.content.setText("[图片]");
+                    break;
+                case VIDEO:
+                    holder.content.setText("[视频]");
+                    break;
+                case VOICE:
+                    holder.content.setText("[音频]");
+                    break;
+            }
+        }
         //设置用户名
         holder.userName.setText(msg.getUserName());
-        //设置文本消息
-        setMessageContent(holder, msg);
+
         //设置收到最后一条消息的时间
         holder.sendTime.setText(getLastMsgTime(msg));
         //设置消息未读数
         setMessageUnread(holder, msg);
+
         //给item设置点击事件
         holder.message_list_lay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (message!=null) {
+                if (message != null) {
                     message.onItemClick(position);
                 }
             }
@@ -67,7 +106,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (message!=null) {
+                if (message != null) {
                     message.deleteItem(position);
                 }
             }
@@ -84,6 +123,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         private ImageView icon;
         private TextView userName, content, sendTime, unread; //好友昵称，文本，发送时间，未读数
         private Button delete;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             message_list_lay = (LinearLayout) itemView.findViewById(R.id.message_list_lay);

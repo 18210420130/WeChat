@@ -9,36 +9,53 @@
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="消息"
+            android:layout_centerInParent="true"
+            android:textSize="26sp"/>
+        <TextView
+            android:id="@+id/main_add_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentRight="true"
+            android:text="添加" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="连接状态已断开"
+        android:textColor="#ff00ff"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/main_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!" />
-    <SearchView
-        android:id="@+id/main_searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:queryHint="请输入搜索内容" />
-
 
     <FrameLayout
         android:id="@+id/message_list_fragment"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="3">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/main_button_fragment"
-        android:layout_weight="3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       >
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
     </FrameLayout>
 
@@ -53,7 +70,7 @@
 </LinearLayout>
     <fragment
         android:name="com.ccjy.wechat.fragment.Fragment1"
-        android:layout_width="100dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="left">
 

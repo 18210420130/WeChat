@@ -1,5 +1,6 @@
 package com.ccjy.wechat.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,6 @@ import android.widget.EditText;
 
 import com.ccjy.wechat.MainActivity;
 import com.ccjy.wechat.R;
-import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -28,6 +28,7 @@ public class MySelfListFragment extends Fragment implements EMMessageListener {
     private EditText et_content;
     private Button send;
     private EMMessage message;
+    private  Button setGroup; //创建群组
 
     @Nullable
     @Override
@@ -46,11 +47,18 @@ public class MySelfListFragment extends Fragment implements EMMessageListener {
         et_userName = (EditText) view.findViewById(R.id.et_userName);
         et_content = (EditText) view.findViewById(R.id.et_content);
         send = (Button) view.findViewById(R.id.send);
+        setGroup = (Button) view.findViewById(R.id.setGroup);
+        setGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              MainActivity mainActivity= (MainActivity) getActivity();
+                mainActivity.intent2SetGroup();
+            }
+        });
 
 
 
         //创建一条文本消息，content为消息文字内容，toChatUsername为对方用户或者群聊的id，后文皆是如此
-
 
 
         //发送消息
@@ -60,7 +68,7 @@ public class MySelfListFragment extends Fragment implements EMMessageListener {
                 String userName = et_userName.getText().toString();
                 String content = et_content.getText().toString();
                 message = EMMessage.createTxtSendMessage(content, userName);
-                    EMClient.getInstance().chatManager().sendMessage(message);
+                EMClient.getInstance().chatManager().sendMessage(message);
             }
         });
 

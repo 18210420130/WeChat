@@ -1,9 +1,6 @@
 package com.ccjy.wechat.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-
 import com.ccjy.wechat.R;
 import com.hyphenate.chat.EMClient;
 

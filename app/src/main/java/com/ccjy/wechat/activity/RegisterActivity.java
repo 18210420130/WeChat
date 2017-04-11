@@ -16,6 +16,7 @@ import com.hyphenate.exceptions.HyphenateException;
 
 /**
  * Created by dell on 2017/3/27.
+ * 注册页面
  */
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {

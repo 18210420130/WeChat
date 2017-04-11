@@ -1,8 +1,7 @@
 package com.ccjy.wechat.adpater;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.app.ActionBar;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.ccjy.wechat.R;
-import com.ccjy.wechat.activity.ChatDetailsActivity;
 import com.ccjy.wechat.utils.SPUtils;
+import com.ccjy.wechat.view.GlideCircleTransform;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,8 @@ import java.util.List;
 public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.ViewHolder> {
     private Context context;
     private List<EMMessage> list = new ArrayList<>();
+
+
 
     public ChatDetailsAdapter(Context context, List<EMMessage> list) {
         this.context = context;
@@ -46,9 +48,17 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.
         EMMessage message = list.get(position);
         //设置时间的方法
         setMsgTime(holder, message);
-        //设置消息内容
-        setMsgContent(holder, message);
-    }
+
+        EMMessage.Type typeMsg = message.getType();
+        switch (typeMsg) {
+            case TXT:
+                //设置消息内容
+                setMsgContent(holder, message);
+                break;
+        }
+
+
+}
 
     //设置消息内容
     private void setMsgContent(ViewHolder holder, EMMessage message) {
