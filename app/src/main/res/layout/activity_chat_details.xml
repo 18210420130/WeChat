@@ -27,7 +27,7 @@
             android:textSize="14sp"
              />
 
-        <TextView
+        <Button
             android:id="@+id/chat_details_activity_send"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -61,5 +61,13 @@
             android:layout_height="wrap_content"
             android:text="音频"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chat_details_activity_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"/>
+
+
 
 </LinearLayout>

@@ -17,6 +17,7 @@ import com.ccjy.wechat.R;
 import com.ccjy.wechat.callbreak.MessageListOnItemClickListener;
 import com.ccjy.wechat.view.GlideCircleTransform;
 import com.hyphenate.chat.EMConversation;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 
@@ -151,7 +152,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         return (int) (time / 24);
     }
 
-    //设置文本消息方法 获取到最后一条发送的文本消息 如果有内容  就设置 ，如果没有 就显示 空
+    //设置文本消息 获取到最后一条发送的文本消息 如果有内容  就设置 ，如果没有 就显示 空
     private void setMessageContent(MyViewHolder holder, EMConversation msg) {
         String message;
         try {
@@ -164,7 +165,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         holder.content.setText(message);
     }
 
-    //设置消息未读数的方法    如果未读数大于0，就设置可见，反之 设置不可见
+
+    //设置消息未读数的    如果未读数大于0，就设置可见，反之 设置不可见
     private void setMessageUnread(MyViewHolder holder, EMConversation msg) {
         int unreadMsgCount = msg.getUnreadMsgCount();
         if (unreadMsgCount > 0) {
@@ -205,6 +207,10 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     public void setOnItemClickListener(MessageListOnItemClickListener message) {
         this.message = message;
+    }
+    //生命周期
+    public void refAll(List<EMConversation> list) {
+        this.notifyDataSetChanged();
     }
 
 

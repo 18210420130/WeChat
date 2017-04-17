@@ -1,8 +1,11 @@
 package com.ccjy.wechat.adpater;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +16,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.ccjy.wechat.R;
+import com.ccjy.wechat.activity.ChatDetailsActivity;
 import com.ccjy.wechat.utils.SPUtils;
 import com.ccjy.wechat.view.GlideCircleTransform;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import java.text.SimpleDateFormat;
@@ -28,8 +34,7 @@ import java.util.List;
 public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.ViewHolder> {
     private Context context;
     private List<EMMessage> list = new ArrayList<>();
-
-
+    private ArrayList<String> imageList;
 
     public ChatDetailsAdapter(Context context, List<EMMessage> list) {
         this.context = context;
@@ -55,6 +60,13 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.
                 //设置消息内容
                 setMsgContent(holder, message);
                 break;
+            case IMAGE:
+                setMsgImage(holder,message);
+                break;
+            case VIDEO:
+                break;
+            case VOICE:
+                break;
         }
 
 
@@ -68,14 +80,49 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.
             holder.layout_left.setVisibility(View.GONE);
             holder.name_right.setText("我");
             //把消息设置为文本消息
+            holder.content_right.setVisibility(View.VISIBLE);
+            holder.content_left.setVisibility(View.GONE);
             holder.content_right.setText(txt.getMessage());
         } else {
             holder.layout_right.setVisibility(View.GONE);
             holder.layout_left.setVisibility(View.VISIBLE);
             holder.name_left.setText(message.getUserName());
+            holder.content_left.setVisibility(View.VISIBLE);
+            holder.content_right.setVisibility(View.GONE);
             holder.content_left.setText(txt.getMessage());
         }
     }
+
+    //设置图片内容
+    private void setMsgImage(ViewHolder holder,EMMessage message){
+        EMImageMessageBody emImage= (EMImageMessageBody) message.getBody();
+        if (SPUtils.getlastLoginUserName(context).equals(message.getFrom())){
+            holder.layout_right.setVisibility(View.VISIBLE);
+            holder.layout_left.setVisibility(View.GONE);
+            holder.name_right.setText("我");
+            holder.image_right.setVisibility(View.VISIBLE);
+            holder.image_left.setVisibility(View.GONE);
+            //显示 图片 本地的的url getLocalUrl()
+            Glide.with(context)
+                    .load(emImage.getLocalUrl())
+                    .override(300,200)
+                    .into(holder.image_right);
+        }else{
+            holder.layout_right.setVisibility(View.GONE);
+            holder.layout_left.setVisibility(View.VISIBLE);
+            holder.name_left.setText(message.getUserName());
+            holder.image_right.setVisibility(View.GONE);
+            holder.image_left.setVisibility(View.VISIBLE);
+            //显示 图片 缩略图的url getThumbnailUrl()
+            Glide.with(context)
+                    .load(emImage.getThumbnailUrl())
+                    .override(300,200)
+                    .into(holder.image_left);
+        }
+
+    }
+
+
 
     //设置时间的方法
     private void setMsgTime(ViewHolder holder, EMMessage message) {
@@ -102,6 +149,7 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.
         private LinearLayout layout_left, layout_right;
         private ImageView icon_left, icon_right;
         private TextView name_left, name_right, content_left, content_right, time;
+        private ImageView image_left,image_right;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -114,6 +162,9 @@ public class ChatDetailsAdapter extends RecyclerView.Adapter<ChatDetailsAdapter.
             content_left = (TextView) itemView.findViewById(R.id.item_chat_details_content_left);
             content_right = (TextView) itemView.findViewById(R.id.item_chat_details_content_right);
             time = (TextView) itemView.findViewById(R.id.item_chat_details_time);
+            image_left= (ImageView) itemView.findViewById(R.id.item_chat_details_image_left);
+            image_right= (ImageView) itemView.findViewById(R.id.item_chat_details_image_right);
+
         }
     }
 

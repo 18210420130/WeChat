@@ -57,7 +57,7 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
+
         //注册消息监听
         initRecyclerView(view);
     }
@@ -91,7 +91,7 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
                     return 1;
                 else if (c1.getLastMessage().getMsgTime() == c2.getLastMessage().getMsgTime())
                     return 0;
-                else if (c1.getLastMessage().getMsgTime() < c2.getLastMessage().getMsgTime())
+                else if (c1.getLastMessage().getMsgTime() > c2.getLastMessage().getMsgTime())
                     return -1;
                 return 0;
             }
@@ -101,6 +101,7 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
 
     private void initRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.message_list_recyclerView);
+        initData();
         //设置上拉刷新和下拉加载
         setRefreshLayout(view);
         //实例化适配器
@@ -210,5 +211,20 @@ public class MessageListFragment extends Fragment implements EMMessageListener {
     @Override
     public void onMessageChanged(EMMessage emMessage, Object o) {
 
+    }
+
+    public void notifyList() {
+        // 调用加载数据方法
+        initData();
+        if (messageListAdapter != null) {
+            // 刷新listView
+            messageListAdapter.refAll(list);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        notifyList();
     }
 }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ public class MainActivity extends BaseActivity implements EMConnectionListener {
     public static final String CONTACTS_FRAGMENT = "CONTACTS_FRAGMENT";
     public static final String MYSELF_FRAGMENT = "MYSELF_FRAGMENT";
     private HashMap<String, String> textMap = new HashMap<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +113,10 @@ public class MainActivity extends BaseActivity implements EMConnectionListener {
     }
 
 
+
+
+
+
     //跳转到消息详情页面
     public void intent2ChatDetails(String userName) {
         Intent intent = new Intent("android.intent.action.CHAT_DETAILS");
@@ -131,8 +138,8 @@ public class MainActivity extends BaseActivity implements EMConnectionListener {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
-                textMap.put(data.getStringExtra(ChatDetailsActivity.USERNAME), data.getStringExtra("text"));
                 try {
+                    textMap.put(data.getStringExtra(ChatDetailsActivity.USERNAME), data.getStringExtra("text"));
                     if (TextUtils.isEmpty(data.getStringExtra("text"))) {
                         textMap.remove(data.getStringExtra(ChatDetailsActivity.USERNAME));
                     }

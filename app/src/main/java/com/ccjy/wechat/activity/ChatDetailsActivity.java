@@ -1,30 +1,42 @@
 package com.ccjy.wechat.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import com.ccjy.wechat.R;
 import com.ccjy.wechat.adpater.ChatDetailsAdapter;
+import com.ccjy.wechat.fragment.PictureFragment;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by dell on 2017/3/29.
@@ -36,95 +48,90 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     private RecyclerView recyclerView;
     private ChatDetailsAdapter chatDetailsAdapter;
     private EditText content; //发送消息文本框
-    private TextView send,picture,video, voice;  //发送按钮
-    private TextView title_name;  //显示昵称
+    private Button send, picture, video, voice;  //发送按钮
     private String userName, groupId;
-    private static final String GROUPID = "groupId";
+    public static final String GROUPID = "groupId";
     public static final String USERNAME = "userName";
     private String text;
-    
+    private FragmentManager fragmentManager;
+    private PictureFragment pictureFragment;
+    private FragmentTransaction ft;
+    private static final int OPEN_IMAGE_CAMERA =1;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //设置actionBar
-        setActionBar();
         setContentView(R.layout.activity_chat_details);
         //注册消息监听
         EMClient.getInstance().chatManager().addMessageListener(this);
+        //获取携带数据
+        getExtra();
         initView();
-        //设置title_name
-        setTitleName();
-    }
+        initFragment();
 
-    private void setTitleName() {
-        //判断是群组会话 还是 个人会话
-        if (TextUtils.isEmpty(userName)) {
-            title_name.setText(groupId);
-        } else {
-            title_name.setText(userName);
-        }
+
     }
 
     private void initView() {
-        //获取携带数据
-        getExtra();
-        //给输入框设置文本监听
-        setContentListener();
+        getData();
         recyclerView = (RecyclerView) findViewById(R.id.chat_details_activity_recyclerView);
         content = (EditText) findViewById(R.id.chat_details_activity_content);
-        send = (TextView) findViewById(R.id.chat_details_activity_send);
-        picture= (TextView) findViewById(R.id.chat_details_picture);
-        video= (TextView) findViewById(R.id.chat_details_video);
-        voice= (TextView) findViewById(R.id.chat_details_voice);
-
+        send = (Button) findViewById(R.id.chat_details_activity_send);
+        picture = (Button) findViewById(R.id.chat_details_picture);
+        video = (Button) findViewById(R.id.chat_details_video);
+        voice = (Button) findViewById(R.id.chat_details_voice);
         send.setOnClickListener(this);
         picture.setOnClickListener(this);
         video.setOnClickListener(this);
         voice.setOnClickListener(this);
-
-        list.clear();
-        getData();
         chatDetailsAdapter = new ChatDetailsAdapter(this, list);
+        // list.clear();
+
+        //给文本输入框 设置监听
+        content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                text = s.toString();
+            }
+        });
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(chatDetailsAdapter);
     }
 
-    private void setContentListener() {
-        if (content!=null) {
-            content.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    text = s.toString();
-                }
-            });
-        }
+    private void initFragment() {
+        fragmentManager = getSupportFragmentManager();
+        pictureFragment = new PictureFragment();
+        //设置actionBar
+        setActionBar();
     }
+
 
     private void getExtra() {
         Intent intent = getIntent();
         try {
             userName = intent.getStringExtra(USERNAME);
             groupId = intent.getStringExtra(GROUPID);
-            text= intent.getStringExtra("text");
+            text = intent.getStringExtra("text");
             List<EMMessage> messages = intent.getParcelableArrayListExtra(AddFriendActivity.ALL_MESSAGE);
             String username = intent.getStringExtra(AddFriendActivity.FRIEND_USERNAME);
             list.addAll(messages);
             this.userName = username;
         } catch (Exception e) {
-            toastShow(ChatDetailsActivity.this, "暂时没有新的聊天记录");
+            e.printStackTrace();
         }
         if (!TextUtils.isEmpty(text)) {
             content.setText(text);
@@ -156,16 +163,104 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
         }
     }
 
+    //发送监听
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.chat_details_activity_send:
+                send();
+                break;
+            case R.id.chat_details_picture:
+                //判断底部fragment是否添加过  如果有则 删除fragment 反之 添加
+                if (pictureFragment.isAdded()) {
+                    closeImageFragment();
+                } else {
+                    openImageFragment();
+                }
+                break;
+            case R.id.chat_details_video://拍照
+                Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//调用系统相机
+                //  MediaStore.ACTION_VIDEO_CAPTURE
+                // intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile())
+                startActivityForResult(intent,OPEN_IMAGE_CAMERA);
+
+                break;
+
+
+            case R.id.chat_details_voice:
+                break;
+
+        }
+
+
+    }
+
+    /**
+     * 设置ActionBar
+     */
     private void setActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        //显示自定义的actionBar
-        actionBar.setDisplayShowCustomEnabled(true);
-        View actionbarLayout = LayoutInflater.from(this).inflate(R.layout.layout_actionbar, null);
-        actionBar.setCustomView(actionbarLayout);
-        title_name = (TextView) actionbarLayout.findViewById(R.id.message_list_layout_title);
-        TextView setting = (TextView) actionbarLayout.findViewById(R.id.message_list_layout_setting);
-        title_name.setTextColor(Color.WHITE);
-        setting.setTextColor(Color.WHITE);
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            //设置返回键的图片
+            //   actionBar.setHomeAsUpIndicator(R.drawable.back_arrow);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.actionbar_chat_details_menu, menu);
+//        View view = menu.findItem(R.id.menu_title).getActionView();
+//        TextView  tv= (TextView)view.findViewById(R.id.menu_textName);
+//        tv.setText(userName);
+        if (TextUtils.isEmpty(groupId)) {
+            setTitle(userName);
+        } else {
+            setTitle(groupId);
+        }
+        return true;
+    }
+
+
+    /**
+     * setActionBar所有按钮的点击事件
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent();
+                intent.putExtra("text", text);
+                intent.putExtra("userName", userName);
+                setResult(RESULT_OK, intent);
+                finish();
+                return true;
+            case R.id.menu_test1:
+                toastShow(ChatDetailsActivity.this, "test1");
+                break;
+            case R.id.menu_test2:
+                toastShow(ChatDetailsActivity.this, "test2");
+                break;
+            case R.id.menu_test3:
+                toastShow(ChatDetailsActivity.this, "test3");
+                break;
+            case R.id.menu_test4:
+                toastShow(ChatDetailsActivity.this, "test4");
+                break;
+            case R.id.menu_test5:
+                toastShow(ChatDetailsActivity.this, "test5");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -209,25 +304,33 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
                 .removeMessageListener(this);
     }
 
-    //发送监听
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.send:
-                send();
-                break;
-            case R.id.chat_details_picture:
-                break;
-            case R.id.chat_details_video:
-                break;
-            case R.id.chat_details_voice:
-                break;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        }
-
-
+        super.onActivityResult(requestCode, resultCode, data);
     }
-   //发送方法
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
+    }
+
+    //打开图片fragment页面
+    private void openImageFragment() {
+        ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.chat_details_activity_fragment, pictureFragment);
+        ft.addToBackStack("message_btn_fragment");
+        ft.commit();
+    }
+
+    //关闭图片fragment页面
+    private void closeImageFragment() {
+        ft = fragmentManager.beginTransaction();
+        ft.remove(pictureFragment);
+        ft.commit();
+        //从fragment的返回栈中移除fragment
+        fragmentManager.popBackStackImmediate("message_btn_fragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
     private void send() {
         String str = content.getText().toString();
         try {
@@ -245,19 +348,42 @@ public class ChatDetailsActivity extends BaseActivity implements EMMessageListen
     private void sendTxt(String str) {
         EMMessage message;
         //获取到输入框中的内容
-
         if (TextUtils.isEmpty(userName)) {
             message = EMMessage.createTxtSendMessage(str, groupId);
             message.setChatType(EMMessage.ChatType.GroupChat);
         } else {
             message = EMMessage.createTxtSendMessage(str, userName);
         }
+        //发送消息
+        sendMessage(message);
+
+    }
+
+    private void sendMessage(EMMessage message) {
         //消息回调监听
         message.setMessageStatusCallback(this);
         //发送消息
         EMClient.getInstance().chatManager().sendMessage(message);
         //把消息添加到集合中
         addMsgToList(message);
+    }
+
+    /**
+     * 发送图片消息
+     *
+     * @param imagePath   图片路径
+     * @param isThumbnail 是否发送原图
+     *                    userName 用户名
+     */
+    public void sendImageMessage(String imagePath, boolean isThumbnail) {
+
+        EMMessage message = EMMessage.createImageSendMessage(imagePath, false, userName);
+        if (message == null) {
+            return;
+        }
+        //发送消息
+        sendMessage(message);
+
     }
 
     private void addMsgToList(EMMessage message) {

@@ -8,8 +8,13 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.Toast;
 
+import com.ccjy.wechat.MainActivity;
 import com.ccjy.wechat.callbreak.LoadListener;
+
+import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by dell on 2017/3/31.
@@ -18,6 +23,7 @@ import com.ccjy.wechat.callbreak.LoadListener;
 public class MyRefreshLayout extends SwipeRefreshLayout {
     private RecyclerView recyclerView;
     private boolean loading = false;
+    LinearLayoutManager linearLayoutManager;
 
     public MyRefreshLayout(Context context) {
         super(context);
@@ -36,24 +42,19 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
             if (childAt instanceof RecyclerView) {
                 recyclerView = (RecyclerView) childAt;
                 //设置滑动监听
-                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                recyclerView.addOnScrollListener(new MyScroll(linearLayoutManager) {
                     @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                        Log.e("OnScrollListener", "newState = " + newState);
-                        if (newState == 0) {
+                    public void onLoadMore(int currentPage) {
+                        if (currentPage==0) {
                             canLoad();
                         }
-                    }
-
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
                     }
                 });
             }
         }
     }
+
+
 
     //加载数据
     private void load() {
